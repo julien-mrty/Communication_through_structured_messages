@@ -1,4 +1,0 @@
-recursive-include messaging_app/public *
-include messaging_app/public/favicon.ico
-recursive-include messaging_app/i18n *
-recursive-include messaging_app/templates *
