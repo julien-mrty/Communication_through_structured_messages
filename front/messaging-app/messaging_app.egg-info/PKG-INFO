@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: messaging-app
+Version: 0.1
+Author-email: Uknown <unknown@email.com>
+Project-URL: Homepage, http://unknown.org
+Description-Content-Type: text/x-rst
+Requires-Dist: TurboGears2>=2.5.0
+Requires-Dist: Beaker>=1.8.0
+Requires-Dist: Kajiki>=0.6.3
+Requires-Dist: zope.sqlalchemy>=1.2
+Requires-Dist: sqlalchemy<3.0
+Requires-Dist: alembic
+Requires-Dist: repoze.who
+Requires-Dist: WebHelpers2
+Requires-Dist: Babel>2.12
+Provides-Extra: testing
+Requires-Dist: WebTest>=1.2.3; extra == "testing"
+Requires-Dist: pytest; extra == "testing"
+Requires-Dist: coverage; extra == "testing"
+Requires-Dist: gearbox; extra == "testing"
+
+This file is for you to describe the messaging-app application. Typically
+you would include information such as the information below:
+
+Installation and Setup
+======================
+
+Install ``messaging-app`` using the setup.py script::
+
+    $ cd messaging-app
+    $ python setup.py develop
+
+Create the project database for any model classes defined::
+
+    $ gearbox setup-app
+
+Start the paste http server::
+
+    $ gearbox serve
+
+While developing you may want the server to reload after changes in package files (or its dependencies) are saved. This can be achieved easily by adding the --reload option::
+
+    $ gearbox serve --reload --debug
+
+Then you are ready to go.
