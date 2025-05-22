@@ -1,0 +1,110 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$sid": "reservation.schema.json",
+    "title":"Minimal Scheme for Hall Reservation",
+    "version":1.0,
+    "sport_team":{
+        "type":"object",
+        "properties":{
+            "name":{
+                "description":"Name of the team",
+                "type":"string",
+                "uniqueItems": true
+            },
+            "coach":{
+                "type":"object",
+                "properties":{
+                    "firstname":"string",
+                    "lastname": "string"
+                }
+            },
+            "nb_players":{
+                "description":"Number of players",
+                "type":"integer",
+                "default":10
+            },
+            "sport":{
+                "type": "string",
+                "enum": ["basket", "boxe", "gym", "volley"]
+            }
+        },
+        "required": ["name", "sport"]
+
+    },
+    "artists":{
+        "type":"object",
+        "properties":{
+            "band_name":{
+                "description":"Name of the artist",
+                "type":"string",
+                "uniqueItems": true
+            },
+            "nb_members":{
+                "description":"Number of band members",
+                "type":"integer",
+                "default":1
+            },
+            "music_type":{
+                "type": "string",
+                "enum": ["jazz", "rock", "pop-rock", "pop", "rap", "r&b", "classic"]
+            }
+        },
+        "required": ["band_name"]
+    },
+    "reservation":{
+        "type":"object",
+        "properties":{
+            "reservationID":{
+                "type":"integer",
+                "uniqueItems": true
+            },
+            "event_type":{
+                "type": "string",
+                "enum": ["sport", "concert"]
+            },
+            "starting_date":{
+                "type":"scheme_noyau_date"
+            },
+            "ending_date":{
+                "type":"scheme_noyau_date"
+            },
+            "duration":{
+                "type":"scheme_noyau_duration"
+            },
+            "confirmed":{
+                "description":"Is the confirmation confirmed?",
+                "type":"boolean",
+                "default":false
+            },
+            "hall":{
+                "type":"object",
+                "properties":{
+                    "name":{
+                        "description":"Name of the hall",
+                        "type":"string",
+                        "uniqueItems": true
+                    },
+                    "address":{
+                        "type":"object",
+                        "properties": {
+                            "street_address": { "type": "string" },
+                            "city": { "type": "string" },
+                            "state": { "type": "string" },
+                            "country": { "type" : "string" }
+                        }
+                    },
+                    "nb_seat":{
+                        "description":"Number of seats in the hall",
+                        "type":"integer"
+                    },
+                    "parking":{
+                        "type":"boolean",
+                        "default":false
+                    }
+                },
+                "required": ["name", "address"]
+            }
+        },
+        "required": ["reservationID","event_type","starting_date", "ending_date", "duration", "hall" ]
+    }
+}
