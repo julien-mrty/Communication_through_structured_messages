@@ -1,55 +1,80 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$sid": "reservation.schema.json",
+    "$id": "reservation.schema.json",
     "title":"Minimal Scheme for Hall Reservation",
     "version":1.0,
-    "sport_team":{
-        "type":"object",
-        "properties":{
-            "name":{
-                "description":"Name of the team",
-                "type":"string",
-                "uniqueItems": true
-            },
-            "coach":{
-                "type":"object",
-                "properties":{
-                    "firstname":"string",
-                    "lastname": "string"
+    "definitions": {
+        "sport_team":{
+            "type":"object",
+            "properties":{
+                "name":{
+                    "description":"Name of the team",
+                    "type":"string",
+                    "uniqueItems": true
+                },
+                "coach":{
+                    "type":"object",
+                    "properties":{
+                        "firstname":"string",
+                        "lastname": "string"
+                    }
+                },
+                "nb_players":{
+                    "description":"Number of players",
+                    "type":"integer",
+                    "default":10
+                },
+                "sport":{
+                    "type": "string",
+                    "enum": ["basket", "boxe", "gym", "volley"]
                 }
             },
-            "nb_players":{
-                "description":"Number of players",
-                "type":"integer",
-                "default":10
-            },
-            "sport":{
-                "type": "string",
-                "enum": ["basket", "boxe", "gym", "volley"]
-            }
-        },
-        "required": ["name", "sport"]
+            "required": ["name", "sport"]
 
+        },
+        "artists":{
+            "type":"object",
+            "properties":{
+                "band_name":{
+                    "description":"Name of the artist",
+                    "type":"string",
+                    "uniqueItems": true
+                },
+                "nb_members":{
+                    "description":"Number of band members",
+                    "type":"integer",
+                    "default":1
+                },
+                "music_type":{
+                    "type": "string",
+                    "enum": ["jazz", "rock", "pop-rock", "pop", "rap", "r&b", "classic"]
+                }
+            },
+            "required": ["band_name"]
+        }
     },
-    "artists":{
+    "match":{
         "type":"object",
         "properties":{
-            "band_name":{
-                "description":"Name of the artist",
+            "kind":{
                 "type":"string",
-                "uniqueItems": true
+                "enum":["championship", "premier league", "friendly" ]
             },
-            "nb_members":{
-                "description":"Number of band members",
-                "type":"integer",
-                "default":1
+            "rankings":{
+                "description":"Indicates",
+                "type":"string",
+                "enum":["semi-final","quarter final", "round of 16", "none"]
             },
-            "music_type":{
-                "type": "string",
-                "enum": ["jazz", "rock", "pop-rock", "pop", "rap", "r&b", "classic"]
+            "teams":{
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                    "$ref": "#/definitions/team_sport"
+                },
+                "description": "Teams competes"
             }
-        },
-        "required": ["band_name"]
+
+        }
     },
     "reservation":{
         "type":"object",
@@ -60,7 +85,7 @@
             },
             "event_type":{
                 "type": "string",
-                "enum": ["sport", "concert"]
+                "enum": ["match", "concert"]
             },
             "starting_date":{
                 "type":"scheme_noyau_date"
