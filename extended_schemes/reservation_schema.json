@@ -15,8 +15,8 @@
                 "coach":{
                     "type":"object",
                     "properties":{
-                        "firstname":"string",
-                        "lastname": "string"
+                        "firstname":{"type":"string"},
+                        "lastname": {"type":"string"}
                     }
                 },
                 "nb_players":{
