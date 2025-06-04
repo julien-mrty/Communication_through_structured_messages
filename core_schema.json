@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:polytech:msg:core:1.0",
+  "title": "Structured Message \u2013 Core 1.0",
+  "description": "Common grammar for minimal interoperable messaging between two accounts.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "thread_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sender": {
+      "type": "string"
+    },
+    "receiver": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/component"
+      },
+      "default": []
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Heterogeneous payloads validated by extra schemas (plugins).",
+      "default": {}
+    }
+  },
+  "required": [
+    "id",
+    "thread_id",
+    "timestamp",
+    "sender",
+    "receiver"
+  ],
+  "$defs": {
+    "component": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/checkbox"
+        },
+        {
+          "$ref": "#/$defs/binaryQuestion"
+        },
+        {
+          "$ref": "#/$defs/multiChoice"
+        },
+        {
+          "$ref": "#/$defs/timeSlot"
+        },
+        {
+          "$ref": "#/$defs/color"
+        }
+      ]
+    },
+    "checkbox": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "checkbox"
+        },
+        "label": {
+          "type": "string"
+        },
+        "checked": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "label",
+        "checked"
+      ]
+    },
+    "binaryQuestion": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "binaryQuestion"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "boolean",
+          "nullable": true
+        }
+      },
+      "required": [
+        "type",
+        "question"
+      ]
+    },
+    "multiChoice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "multiChoice"
+        },
+        "question": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "selected": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": [
+        "type",
+        "question",
+        "choices"
+      ]
+    },
+    "timeSlot": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "timeSlot"
+        },
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "type",
+        "start",
+        "end"
+      ]
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "color"
+        },
+        "hex": {
+          "type": "string",
+          "pattern": "^#?[0-9a-fA-F]{6}$"
+        }
+      },
+      "required": [
+        "type",
+        "hex"
+      ]
+    }
+  }
+}
