@@ -1,0 +1,29 @@
+[
+  {
+    "id": "94a4cdbd-3490-42f5-b080-4ef02b409cbc",
+    "thread_id": "fe2d7d32-e07c-4ce5-b02c-60f5c4ee1137",
+    "timestamp": "2025-06-04T22:13:48.859508",
+    "sender": "alice@localhost",
+    "receiver": "bob@localhost",
+    "text": "Hey, game tonight?",
+    "components": [
+      {
+        "TYPE": "binaryQuestion",
+        "question": "Do you have tickets?",
+        "answer": null,
+        "type": "binaryQuestion"
+      }
+    ],
+    "extensions": {}
+  },
+  {
+    "id": "a4557bba-e612-4025-8ac2-2ed05046636d",
+    "thread_id": "fe2d7d32-e07c-4ce5-b02c-60f5c4ee1137",
+    "timestamp": "2025-06-04T22:13:48.859558",
+    "sender": "bob@localhost",
+    "receiver": "alice@localhost",
+    "text": "Nope, still looking.",
+    "components": [],
+    "extensions": {}
+  }
+]
