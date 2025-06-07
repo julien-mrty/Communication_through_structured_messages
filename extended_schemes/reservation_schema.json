@@ -3,7 +3,7 @@
     "$id": "reservation.schema.json",
     "title":"Minimal Scheme for Hall Reservation",
     "description": "Describes a reservation of a hall for an event such as a concert or a match.",
-    "$comment":"vesion 1.0",
+    "$comment":"vesion 1.0.0",
     "$ref": "#/$def/reservation",
     "$def":{
         "sport_team":{
@@ -27,7 +27,7 @@
                 },
                 "sport":{
                     "type": "string",
-                    "enum": ["basket", "boxe", "gym", "volley"]
+                    "enum": ["basket", "boxe", "gym", "volley", "football"]
                 }
             },
             "required": ["name", "sport"]
@@ -72,8 +72,8 @@
                     },
                     "description": "Teams competes"
                 }
-
-            }
+            },
+            "required":["teams"]
         },
         "concert": {
             "type": "object",
@@ -84,7 +84,7 @@
                     "minItems": 1
                 }
             },
-            "required": ["event_type", "artists"]
+            "required": [ "artists"]
         },
         "reservation":{
             "type":"object",
