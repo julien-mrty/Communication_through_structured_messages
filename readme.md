@@ -1,6 +1,6 @@
 # Assistant de Réservation de Salle – Chatbot FastAPI & React
 
-Ce projet est une application web qui simule un **assistant conversationnel** capable de prendre des réservations de salle pour des événements comme des concerts, des matchs, etc.
+Ce projet est une application web qui simule un **assistant conversationnel** capable de prendre des réservations de salle pour des événements comme des concerts, des matchs, conférences.
 
 💬 L’utilisateur interagit via une interface React.
 🤖 Le backend FastAPI traite les messages, guide l’utilisateur étape par étape et valide les données grâce à un schéma JSON Schema.
@@ -68,6 +68,7 @@ Voici les étapes de la conversation typique :
 
    * 🎤 **Concert** : on demande le **nom du groupe ou de l'artiste**
    * ⚽ **Match** : on demande **deux équipes** (ex: `Lakers, Celtics`)
+   * 🎙️ **Conférence** : on demande le **nom de l’intervenant ou du sujet**
 4. Le bot demande une **date** au format `AAAA-MM-JJ`
 5. Il confirme les infos et propose un **bouton de confirmation**
 6. Une fois validé, un objet `reservation` est généré et **validé avec un JSON Schema**
