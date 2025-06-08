@@ -23,9 +23,6 @@ Ce projet est une application web qui simule un **assistant conversationnel** ca
 git clone https://github.com/ton-compte/assistant-reservation.git
 cd assistant-reservation/backend
 
-# Installation des dépendances
-pip install -r requirements.txt
-```
 
 #### ▶️ Lancer le serveur
 
