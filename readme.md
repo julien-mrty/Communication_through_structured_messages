@@ -39,7 +39,7 @@ L’API sera disponible sur `http://localhost:8000`.
 #### ⬇️ Prérequis
 
 * Node.js (18+ recommandé)
-* `npm` ou `yarn`
+* `npm`
 
 #### ▶️ Installation
 
