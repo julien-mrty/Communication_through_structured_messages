@@ -179,7 +179,7 @@ def receive_message(message: Message) -> Message:
         try:
             validator.validate(reservation)
         except ValidationError as e:
-            return create_message("bot@localhost", message.sender, f"❌ Validation failed: {e.message}", thread_id)
+            return create_message("bot@localhost", message.sender, f"Validation failed: {e.message}", thread_id)
 
         return create_message(
             sender="bot@localhost",

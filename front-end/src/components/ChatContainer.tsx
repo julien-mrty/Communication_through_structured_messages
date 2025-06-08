@@ -28,7 +28,7 @@ const ChatContainer: React.FC = () => {
             key={message.id}
             message={message} 
             onYesNoReply={sendYesNo}
-            onQuickReply={sendQuickReply} // ✅ Correction ici
+            onQuickReply={sendQuickReply}
           />
         ))}
 
