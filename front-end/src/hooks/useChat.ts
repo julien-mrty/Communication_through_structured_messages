@@ -1,13 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Message } from "../types/chat";
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const startConversation = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/start");
+        const data = await res.json();
+        setThreadId(data.thread_id);
+        setMessages([data]);
+      } catch (err) {
+        console.error("Erreur lors de l'initialisation :", err);
+      }
+    };
+
+    startConversation();
+  }, []);
 
   const sendMessage = async (text: string) => {
+    if (!threadId) return;
+
     const userMessage: Message = {
       id: crypto.randomUUID(),
+      thread_id: threadId,
       sender: "frontend@localhost",
       receiver: "bot@localhost",
       timestamp: new Date().toISOString(),
@@ -23,28 +42,26 @@ export function useChat() {
       const res = await fetch("http://localhost:8000/api/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text }),
+        body: JSON.stringify(userMessage),
       });
 
       const data = await res.json();
-      console.log("Réponse du backend :", data);
+      console.log("🎯 Données reçues du back-end :", data);
 
-      const botMessage: Message = {
-        id: data.response.id,
-        sender: data.response.sender,
-        receiver: data.response.receiver,
-        timestamp: data.response.timestamp,
-        text: data.response.text,
-        components: data.response.components || [],
-        extensions: data.response.extensions || {},
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages((prev) => [...prev, data]);
     } catch (err) {
       console.error("Erreur lors de l'envoi :", err);
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const sendYesNo = async (answer: boolean) => {
+    await sendMessage(answer ? "oui" : "non");
+  };
+
+  const sendQuickReply = async (_replyId: string, replyText: string) => {
+    await sendMessage(replyText);
   };
 
   return {
@@ -57,7 +74,7 @@ export function useChat() {
       isTyping,
     },
     sendMessage,
-    sendYesNo: () => {},
-    sendQuickReply: () => {},
+    sendYesNo,
+    sendQuickReply,
   };
 }

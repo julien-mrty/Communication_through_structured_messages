@@ -25,18 +25,17 @@ const ChatContainer: React.FC = () => {
       >
         {messages.map((message) => (
           <Message 
-            key={message.id} 
+            key={message.id}
             message={message} 
             onYesNoReply={sendYesNo}
-            onQuickReply={(id, text) => sendQuickReply({ id, text })}
+            onQuickReply={sendQuickReply} // ✅ Correction ici
           />
         ))}
-        
+
         {isTyping && <TypingIndicator user={users.otherUser} />}
       </div>
       
       <ChatInput onSendMessage={sendMessage} />
-
     </div>
   );
 };
