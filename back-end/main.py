@@ -3,12 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Dict, List, Optional
 from jsonschema import Draft202012Validator, ValidationError
-import json
-import uuid
 from datetime import datetime
+import uuid, json
 
 app = FastAPI()
 
+# ───────────── CORS ─────────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,6 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ──────── Modèle de message ────────
 class Message(BaseModel):
     id: str
     thread_id: str
@@ -27,17 +28,19 @@ class Message(BaseModel):
     components: Optional[List[Dict[str, Any]]] = []
     extensions: Optional[Dict[str, Any]] = {}
 
-with open("core_schema.json") as f:
-    core_schema = json.load(f)
-
-with open("reservation_schema.json") as f:
+# ──────── Chargement et validation JSON Schema ────────
+with open("reservation_schema.json", encoding="utf-8") as f:
     reservation_schema = json.load(f)
 
-reservation_validator = Draft202012Validator(reservation_schema["$def"]["reservation"])
+validator = Draft202012Validator(reservation_schema)
 
+# ──────── États par session ────────
 session_states: Dict[str, Dict[str, Any]] = {}
 
-def create_message(sender, receiver, text, thread_id, components=None, extensions=None):
+# ──────── Utilitaire de création de message ────────
+def create_message(sender: str, receiver: str, text: str, thread_id: str,
+                   components: Optional[List[Dict[str, Any]]] = None,
+                   extensions: Optional[Dict[str, Any]] = None) -> Message:
     return Message(
         id=str(uuid.uuid4()),
         thread_id=thread_id,
@@ -49,89 +52,123 @@ def create_message(sender, receiver, text, thread_id, components=None, extension
         extensions=extensions or {}
     )
 
-@app.get("/api/start")
+# ──────── Démarrage de la conversation ────────
+@app.get("/api/start", response_model=Message)
 def start_conversation():
     thread_id = str(uuid.uuid4())
-    session_states[thread_id] = {"step": "ask_event_type", "reservation": {}}
-
+    session_states[thread_id] = {"step": "ask_start", "reservation": {}}
     return create_message(
         sender="bot@localhost",
         receiver="frontend@localhost",
-        text="Bonjour ! Souhaitez-vous réserver une salle pour un évènement ? 😊",
+        text="Bonjour ! Voulez-vous réserver une salle ?",
         thread_id=thread_id,
-        components=[
-            {
-                "type": "binaryQuestion",
-                "question": "Souhaitez-vous faire une réservation ?"
-            }
-        ]
+        components=[{"type": "binaryQuestion", "question": "On démarre ?"}]
     )
 
-@app.post("/api/message")
+# ──────── Traitement des messages ────────
+@app.post("/api/message", response_model=Message)
 def receive_message(message: Message) -> Message:
     thread_id = message.thread_id
-    user_input = message.text.lower()
+    state = session_states.setdefault(thread_id, {"step": "ask_start", "reservation": {}})
+    answer = message.text.strip().lower()
 
-    if thread_id not in session_states:
-        session_states[thread_id] = {"step": "ask_event_type", "reservation": {}}
-
-    state = session_states[thread_id]
-
-    if state["step"] == "ask_event_type" and user_input in ["oui", "yes"]:
-        state["step"] = "waiting_for_event_type"
+    # 1) Démarrage
+    if state["step"] == "ask_start" and answer in ("oui", "yes"):
+        state["step"] = "ask_type"
         return create_message(
             sender="bot@localhost",
             receiver=message.sender,
-            text="Quel type d'événement voulez-vous réserver ?",
+            text="Quel type d’événement voulez-vous ?",
             thread_id=thread_id,
-            components=[
-                {
-                    "type": "multiChoice",
-                    "question": "Choisissez un type d'événement",
-                    "choices": ["concert", "basket", "handball", "théâtre", "conférence"]
-                }
-            ]
+            components=[{
+                "type": "multiChoice",
+                "question": "Type d’événement",
+                "choices": ["concert", "match"]
+            }]
         )
 
-    elif state["step"] == "waiting_for_event_type" and user_input in ["concert", "basket", "handball", "théâtre", "conférence"]:
-        state["reservation"]["event_type"] = user_input
-        state["step"] = "waiting_for_date"
-        return create_message(
-            sender="bot@localhost",
-            receiver=message.sender,
-            text="Pour quelle date souhaitez-vous réserver la salle ? (format : AAAA-MM-JJ)",
-            thread_id=thread_id
-        )
-
-    elif state["step"] == "waiting_for_date":
-        try:
-            datetime.strptime(user_input, "%Y-%m-%d")
-            state["reservation"]["starting_date"] = user_input
-            state["reservation"]["ending_date"] = user_input
-            state["reservation"]["duration"] = "02:00:00"
-            state["step"] = "confirm"
-
+    # 2) Choix du type d'événement
+    if state["step"] == "ask_type" and answer in ("concert", "match"):
+        state["reservation"]["type_choice"] = answer
+        if answer == "concert":
+            state["step"] = "ask_artist"
             return create_message(
                 sender="bot@localhost",
                 receiver=message.sender,
-                text=f"Souhaitez-vous réserver pour le {user_input} pour un {state['reservation']['event_type']} ?",
+                text="Quel est le nom de l’artiste ou du groupe ?",
+                thread_id=thread_id
+            )
+        else:
+            state["step"] = "ask_teams"
+            return create_message(
+                sender="bot@localhost",
+                receiver=message.sender,
+                text="Donnez au moins deux noms d’équipes, séparés par une virgule.",
+                thread_id=thread_id
+            )
+
+    # 3a) Nom d'artiste
+    if state["step"] == "ask_artist":
+        artist_name = message.text.strip()
+        state["reservation"]["event_type"] = {
+            "artists": [{"band_name": artist_name}]
+        }
+        state["step"] = "ask_date"
+        return create_message(
+            sender="bot@localhost",
+            receiver=message.sender,
+            text="Pour quelle date ? (AAAA-MM-JJ)",
+            thread_id=thread_id
+        )
+
+    # 3b) Équipes pour un match
+    if state["step"] == "ask_teams":
+        teams = [t.strip() for t in message.text.split(",") if t.strip()]
+        if len(teams) < 2:
+            return create_message(
+                sender="bot@localhost",
+                receiver=message.sender,
+                text="Veuillez indiquer au moins deux équipes.",
+                thread_id=thread_id
+            )
+        state["reservation"]["event_type"] = {
+            "teams": [{"name": team, "sport": "football"} for team in teams[:2]]
+        }
+        state["step"] = "ask_date"
+        return create_message(
+            sender="bot@localhost",
+            receiver=message.sender,
+            text="Pour quelle date ? (AAAA-MM-JJ)",
+            thread_id=thread_id
+        )
+
+    # 4) Date de réservation
+    if state["step"] == "ask_date":
+        try:
+            datetime.strptime(answer, "%Y-%m-%d")
+            state["reservation"].update({
+                "starting_date": answer,
+                "ending_date": answer,
+                "duration": "02:00:00"
+            })
+            state["step"] = "ask_confirm"
+            return create_message(
+                sender="bot@localhost",
+                receiver=message.sender,
+                text=f"Confirmez-vous la réservation du {answer} ?",
                 thread_id=thread_id,
-                components=[
-                    {
-                        "type": "binaryQuestion",
-                        "question": "Confirmez-vous cette réservation ?"
-                    }
-                ]
+                components=[{"type": "binaryQuestion", "question": "Oui / Non"}]
             )
         except ValueError:
             return create_message(
                 sender="bot@localhost",
                 receiver=message.sender,
-                text="Le format de date n'est pas valide. Merci d'utiliser AAAA-MM-JJ",
+                text="Format invalide. Utilisez AAAA-MM-JJ.",
                 thread_id=thread_id
             )
 
-    elif state["step"] == "confirm" and user_input in ["oui", "yes"]:
+    # 5) Confirmation finale
+    if state["step"] == "ask_confirm" and answer in ("oui", "yes"):
         reservation = {
             "reservationID": str(uuid.uuid4()),
             **state["reservation"],
@@ -142,32 +179,35 @@ def receive_message(message: Message) -> Message:
                     "city": "Paris",
                     "state": "IDF",
                     "country": "France"
-                }
+                },
+                "accessibility": [],
+                "parking": False
             },
             "status": "pending"
         }
 
         try:
-            reservation_validator.validate(reservation)
+            validator.validate(reservation)
         except ValidationError as e:
             return create_message(
                 sender="bot@localhost",
                 receiver=message.sender,
-                text=f"Erreur de validation : {e.message}",
+                text=f"❌ Validation failed: {e.message}",
                 thread_id=thread_id
             )
 
         return create_message(
             sender="bot@localhost",
             receiver=message.sender,
-            text="Merci, votre réservation a bien été enregistrée ✅",
+            text="✅ Réservation enregistrée avec succès !",
             thread_id=thread_id,
             extensions={"reservation": reservation}
         )
 
+    # Fallback
     return create_message(
         sender="bot@localhost",
         receiver=message.sender,
-        text="Je n'ai pas compris votre réponse. Pour recommencer, tapez 'réserver'.",
+        text="Désolé, je n’ai pas compris. Tapez “oui” pour recommencer.",
         thread_id=thread_id
     )
