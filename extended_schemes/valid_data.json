@@ -1,0 +1,53 @@
+{
+  "reservationID": "bd3a2aa1-2f85-4d6e-a5f7-51e0b4d8e321",
+  "event_type": {
+    "kind": "championship",
+    "rankings": "semi-final",
+    "teams": [
+      {
+        "name": "Lions FC",
+        "coach": {
+          "firstname": "Marc",
+          "lastname": "Dupont"
+        },
+        "nb_players": 11,
+        "sport": "football"
+      },
+      {
+        "name": "Eagles United",
+        "coach": {
+          "firstname": "Claire",
+          "lastname": "Moreau"
+        },
+        "nb_players": 11,
+        "sport": "football"
+      }
+    ]
+  },
+  "starting_date": "2025-10-05",
+  "ending_date": "2025-10-05",
+  "duration": "01:45:00",
+  "status": "confirmed",
+  "hall": {
+    "name": "Grand Stade Olympique",
+    "address": {
+      "street_address": "75 Avenue des Champs",
+      "city": "Lyon",
+      "state": "Auvergne-Rhône-Alpes",
+      "country": "France"
+    },
+    "nb_seat": 50000,
+    "accessibility": ["metro", "buses", "highway"],
+    "metro": {
+      "line": "D",
+      "stop": "Stade de Gerland"
+    },
+    "bus": {
+      "line": "C7",
+      "stop": "Jean Macé"
+    },
+    "highway_id": "A6",
+    "parking": true,
+    "parking_spots": 1200
+  }
+}
