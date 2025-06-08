@@ -1,0 +1,56 @@
+[
+  {
+    "id": "aaf55e90-1d1b-4e7c-91b4-6c066df8dee2",
+    "thread_id": "3cc81e44-d0b2-4a3e-9a54-ceec8468b3ef",
+    "timestamp": "2025-06-08T12:46:39.612493",
+    "sender": "frontend@localhost",
+    "receiver": "bot@localhost",
+    "text": "Bonjour",
+    "components": [],
+    "extensions": {}
+  },
+  {
+    "id": "a7e32b17-2153-499b-9d4b-310253991264",
+    "thread_id": "3cc81e44-d0b2-4a3e-9a54-ceec8468b3ef",
+    "timestamp": "2025-06-08T12:46:39.612505",
+    "sender": "bot@localhost",
+    "receiver": "frontend@localhost",
+    "text": "Message re\u00e7u \ud83d\udc4c",
+    "components": [
+      {
+        "TYPE": "binaryQuestion",
+        "question": "Voulez-vous continuer ?",
+        "answer": null,
+        "type": "binaryQuestion"
+      }
+    ],
+    "extensions": {}
+  },
+  {
+    "id": "73c876df-bb0e-4d64-a57d-b4b087c49b7c",
+    "thread_id": "3cc81e44-d0b2-4a3e-9a54-ceec8468b3ef",
+    "timestamp": "2025-06-08T12:58:30.303148",
+    "sender": "frontend@localhost",
+    "receiver": "bot@localhost",
+    "text": "hello",
+    "components": [],
+    "extensions": {}
+  },
+  {
+    "id": "bf8fd553-e083-4baa-9d2b-f767b98b2a3b",
+    "thread_id": "3cc81e44-d0b2-4a3e-9a54-ceec8468b3ef",
+    "timestamp": "2025-06-08T12:58:30.303154",
+    "sender": "bot@localhost",
+    "receiver": "frontend@localhost",
+    "text": "Message re\u00e7u \ud83d\udc4c",
+    "components": [
+      {
+        "TYPE": "binaryQuestion",
+        "question": "Voulez-vous continuer ?",
+        "answer": null,
+        "type": "binaryQuestion"
+      }
+    ],
+    "extensions": {}
+  }
+]

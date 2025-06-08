@@ -1,0 +1,29 @@
+[
+  {
+    "id": "aaf55e90-1d1b-4e7c-91b4-6c066df8dee2",
+    "thread_id": "54ab1dba-231c-4223-aa25-6d176796bdef",
+    "timestamp": "2025-06-08T12:46:39.612493",
+    "sender": "frontend@localhost",
+    "receiver": "bot@localhost",
+    "text": "Bonjour",
+    "components": [],
+    "extensions": {}
+  },
+  {
+    "id": "a7e32b17-2153-499b-9d4b-310253991264",
+    "thread_id": "54ab1dba-231c-4223-aa25-6d176796bdef",
+    "timestamp": "2025-06-08T12:46:39.612505",
+    "sender": "bot@localhost",
+    "receiver": "frontend@localhost",
+    "text": "Message re\u00e7u \ud83d\udc4c",
+    "components": [
+      {
+        "TYPE": "binaryQuestion",
+        "question": "Voulez-vous continuer ?",
+        "answer": null,
+        "type": "binaryQuestion"
+      }
+    ],
+    "extensions": {}
+  }
+]
