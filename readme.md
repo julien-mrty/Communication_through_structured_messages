@@ -155,6 +155,32 @@ Ce répertoire contient un schéma JSON décrivant un système de **réservation
 - un jeu de tests unitaires en Python (`tests_extended_schemes.py`, `test_valid_data.py` )
 - un exemple de données conforme au schéma (`data_valid.json`)
 
+### 🧩 Modèles de données
+
+| Classe        | Rôle                                                                   |
+| ------------- | ------------------------------------------------------------------------------------ |
+| `reservation` | Structure principale de réservation, incluant les informations générales et la salle |
+| `match`       | Représente un événement sportif avec deux équipes et des métadonnées (type, phase)   |
+| `concert`     | Représente un concert, avec une ou plusieurs entités musicales                       |
+| `conference`  | Décrit une conférence, son sujet, intervenant, et si elle est en ligne               |
+| `sport_team`  | Entité décrivant une équipe sportive (nom, sport, nombre de joueurs, coach)          |
+| `artists`     | Entité décrivant un groupe ou artiste musical (nom, genre musical, membres)          |
+
+### ✅ Contraintes conditionnelles
+Le schéma impose plusieurs règles de validation dynamiques :
+
+- Si hall.accessibility contient "metro", alors hall.metro devient obligatoire
+
+- Si hall.accessibility contient "buses", alors hall.bus devient obligatoire
+
+- Si hall.accessibility contient "highway", alors hall.highway_id devient obligatoire
+
+- Si hall.parking est true, alors hall.parking_spots devient obligatoire
+
+Toutes les propriétés sont validées selon le JSON Schema Draft 2020‑12.
+
+⚠️ Certaines propriétés sont obligatoires selon le contexte (e.g., bus requis si accessibilité contient buses).
+
 ### 📄 Exemple de données
 
 Le fichier data_valid.json contient un exemple complet de réservation (type concert, match ou conférence) conforme au schéma défini.
