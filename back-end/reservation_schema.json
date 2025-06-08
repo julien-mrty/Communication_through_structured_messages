@@ -123,6 +123,27 @@
                 "artists"
             ]
         },
+        "conference": {
+            "type": "object",
+            "properties": {
+                "topic": {
+                    "description": "Sujet principal de la conférence",
+                    "type": "string"
+                },
+                "speaker": {
+                    "type": "string",
+                    "description": "Nom de l'intervenant principal"
+                },
+                "is_online": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": [
+                "topic",
+                "speaker"
+            ]
+        },
         "reservation": {
             "type": "object",
             "properties": {
@@ -137,6 +158,9 @@
                         },
                         {
                             "$ref": "#/$defs/concert"
+                        },
+                        {
+                            "$ref": "#/$defs/conference"
                         }
                     ]
                 },
