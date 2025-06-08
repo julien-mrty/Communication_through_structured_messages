@@ -14,9 +14,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser }) => {
           <MessageSquare size={24} className="text-white" />
         </div>
         <div className="flex items-center">
-          <img 
-            src={otherUser.avatar} 
-            alt={`${otherUser.name}'s avatar`} 
+          <img
+            src={otherUser.avatar || "https://media.istockphoto.com/id/1437821111/fr/photo/service-%C3%A0-la-client%C3%A8le-heureux-et-communication-de-la-femme-au-centre-dappels-pc-parlant.jpg?s=612x612&w=0&k=20&c=p8jjC-QHvBaFx4T3Fk0Avwm5X6WSSs9pheZ0XuubSnA="}
+            alt={`${otherUser.name}'s avatar`}
             className="w-10 h-10 rounded-full border-2 border-white object-cover"
           />
           <div className="ml-3">
@@ -24,9 +24,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser }) => {
             <p className="text-xs text-gray-200">Online</p>
           </div>
         </div>
-      </div>
-      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10">
-        <span className="text-xs font-bold">NBA</span>
       </div>
     </div>
   );
